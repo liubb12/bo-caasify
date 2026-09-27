@@ -1,20 +1,19 @@
-# 1. 使用官方稳定的 Node.js Alpine 基础镜像
+# 1. 使用官方稳定的 Node.js 镜像
 FROM node:18-alpine
 
-# 2. 设置标准的工作目录
+# 2. 设置应用工作目录
 WORKDIR /app
 
-# 3. 复制代码及依赖文件
-COPY index.js index.html package.json ./
+# 3. 复制代码及包管理文件
+COPY package*.json ./
+COPY index.js index.html ./
 
-# 4. 暴露端口（标准格式）
-EXPOSE 3000
-
-# 5. 清理缓存并安装基础工具及 npm 依赖
-RUN apk update && apk upgrade && \
-    apk add --no-cache openssl curl gcompat iproute2 coreutils bash && \
-    chmod +x index.js && \
+# 4. 安装基础依赖与 npm 包
+RUN apk add --no-cache curl bash && \
     npm install
 
-# 6. 启动容器
-CMD ["node", "index.js"]
+# 5. 声明端口
+EXPOSE 3000
+
+# 6. 启动指令
+CMD ["npm", "start"]
